@@ -1,25 +1,32 @@
 #!/bin/bash
 
-# Exit on error
-set -e
+set -euo pipefail
 
-# Ensure Homebrew is installed
+echo "Ensuring Homebrew is installed..."
 if ! command -v brew >/dev/null 2>&1; then
   echo "Homebrew not found. Installing..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo "Homebrew installed."
 fi
 
-# Install topgrade if not already installed
+echo "Checking for topgrade..."
 if ! command -v topgrade >/dev/null 2>&1; then
   echo "Installing topgrade..."
   brew install topgrade
+else
+  echo "Topgrade already installed."
 fi
 
-# Create LaunchAgent plist
+TOPGRADE_BIN="$(brew --prefix)/bin/topgrade"
 PLIST_NAME="com.user.topgrade.monday"
 PLIST_PATH="$HOME/Library/LaunchAgents/${PLIST_NAME}.plist"
+LOG_DIR="$HOME/Library/Logs"
+LOG_OUT="$LOG_DIR/topgrade.log"
+LOG_ERR="$LOG_DIR/topgrade.err"
 
-echo "Creating launch agent plist at $PLIST_PATH..."
+mkdir -p "$LOG_DIR"
+
+echo "Writing LaunchAgent to $PLIST_PATH..."
 
 cat > "$PLIST_PATH" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -32,7 +39,7 @@ cat > "$PLIST_PATH" <<EOF
 
     <key>ProgramArguments</key>
     <array>
-        <string>/opt/homebrew/bin/topgrade</string>
+        <string>${TOPGRADE_BIN}</string>
         <string>--yes</string>
     </array>
 
@@ -47,18 +54,18 @@ cat > "$PLIST_PATH" <<EOF
     </dict>
 
     <key>StandardOutPath</key>
-    <string>$HOME/Library/Logs/topgrade.log</string>
+    <string>${LOG_OUT}</string>
     <key>StandardErrorPath</key>
-    <string>$HOME/Library/Logs/topgrade.err</string>
+    <string>${LOG_ERR}</string>
     <key>RunAtLoad</key>
     <true/>
 </dict>
 </plist>
 EOF
 
-# Load the LaunchAgent
-echo "Loading launch agent..."
+echo "Reloading launch agent..."
 launchctl unload "$PLIST_PATH" 2>/dev/null || true
 launchctl load "$PLIST_PATH"
 
-echo "✅ Topgrade will now run every Monday at 08:00"
+echo "Topgrade will now run every Monday at 08:00."
+echo "Logs: $LOG_OUT and $LOG_ERR"
