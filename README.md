@@ -3,10 +3,12 @@
 Run this command from your terminal:
 
 ```
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/Sand-EnterpriseAI/ITOps.Utils.Public/refs/heads/main/mac/schedule-topgrade.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/Sand-EnterpriseAI/ITOps.Utils.Public/refs/heads/main/mac/install-and-schedule-topgrade.sh)"
 ```
 
 * The default script will schedule `topgrade` to run at 08h00 every Monday. Download and modify the script if you would prefer a different schedule.
+
+* After installing you should be able to run 'topgrade' from your command line at any time to update your machine
 
 * To verify the `topgrade` installation was successful run `which topgrade && topgrade --version` and check that it exists
 
