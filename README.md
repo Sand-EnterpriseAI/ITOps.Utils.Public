@@ -10,8 +10,6 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/Sand-EnterpriseAI/ITOps.
 
 * After installing you should be able to run 'topgrade' from your command line at any time to update your machine
 
-* To verify the `topgrade` installation was successful run `which topgrade && topgrade --version` and check that it exists
-
 * To verify the schedule has been set, run `bash -c "$(curl -fsSL https://raw.githubusercontent.com/Sand-EnterpriseAI/ITOps.Utils.Public/refs/heads/main/mac/check-topgrade-install.sh)"
 ` from your terminal
 
